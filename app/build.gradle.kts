@@ -108,6 +108,9 @@ dependencies {
     implementation(libs.android.plugin.markerview.v9)
     implementation(libs.android.plugin.annotation.v9)
 
+    implementation(libs.androidx.constraintlayout)
+    implementation(libs.material)
+    implementation(libs.androidx.appcompat)
     implementation(libs.lifecycle.extensions)
     kapt(libs.lifecycle.compiler)
     implementation(files("libs/maps-1.0.68.aar"))
