@@ -3,19 +3,18 @@ import java.util.Properties
 plugins {
     alias(libs.plugins.com.android.application)
     alias(libs.plugins.org.jetbrains.kotlin.android)
-    alias(libs.plugins.dagger.hilt)
+//    alias(libs.plugins.dagger.hilt)
     alias(libs.plugins.ksp)
-    alias(libs.plugins.compose.compiler)
+//    alias(libs.plugins.compose.compiler)
+    id("kotlin-kapt")
 }
 
 android {
-    // TODO: Set Namespace
-    namespace = "com.debk007.template"
+    namespace = "com.debk007.olamaps"
     compileSdk = 34
 
     defaultConfig {
-        // TODO: Set Package Name
-        applicationId = "com.debk007.template"
+        applicationId = "com.debk007.olamaps"
         minSdk = 24
         targetSdk = 33
         versionCode = 1
@@ -29,18 +28,18 @@ android {
         val localProperties = Properties()
         val localPropertiesFile = rootProject.file("local.properties")
 
-        val baseUrl = if (localPropertiesFile.exists()) {
-            localProperties.load(localPropertiesFile.inputStream())
-
-            localProperties.getProperty("BASE_URL", "https://dummyjson.com/")
-        } else {
-            "https://dummyjson.com/"
-        }
-
-        /* TODO: Add base URL in local.properties file as:-
-         *  BASE_URL=https://dummyjson.com/
-        */
-        buildConfigField("String", "BASE_URL", "\"${baseUrl}\"")
+//        val baseUrl = if (localPropertiesFile.exists()) {
+//            localProperties.load(localPropertiesFile.inputStream())
+//
+//            localProperties.getProperty("BASE_URL", "https://dummyjson.com/")
+//        } else {
+//            "https://dummyjson.com/"
+//        }
+//
+//        /* TODO: Add base URL in local.properties file as:-
+//         *  BASE_URL=https://dummyjson.com/
+//        */
+//        buildConfigField("String", "BASE_URL", "\"${baseUrl}\"")
     }
 
     buildTypes {
@@ -60,7 +59,8 @@ android {
         jvmTarget = "11"
     }
     buildFeatures {
-        compose = true
+//        compose = true
+        viewBinding = true
         buildConfig = true
     }
     packaging {
@@ -74,29 +74,41 @@ dependencies {
 
     implementation(libs.core.ktx)
     implementation(libs.lifecycle.runtime.ktx)
-    implementation(libs.activity.compose)
-    implementation(platform(libs.compose.bom))
+//    implementation(libs.activity.compose)
+//    implementation(platform(libs.compose.bom))
     implementation(libs.ui)
     implementation(libs.ui.graphics)
     implementation(libs.ui.tooling.preview)
-    implementation(libs.material3)
+//    implementation(libs.material3)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.test.ext.junit)
     androidTestImplementation(libs.espresso.core)
-    androidTestImplementation(platform(libs.compose.bom))
+//    androidTestImplementation(platform(libs.compose.bom))
     androidTestImplementation(libs.ui.test.junit4)
     debugImplementation(libs.ui.tooling)
     debugImplementation(libs.ui.test.manifest)
     implementation(libs.retrofit)
     implementation(libs.moshi.converter)
     ksp(libs.moshi.kotlin.codegen)
-    implementation(libs.glide)
+//    implementation(libs.glide)
     implementation(libs.coroutines.android)
     implementation(libs.coroutines.core)
-    implementation(libs.hilt.android)
-    ksp(libs.hilt.kapt)
-    implementation(libs.hilt.navigation.compose)
-    implementation(libs.navigation.compose)
-    debugImplementation(libs.chucker.debug)
-    releaseImplementation(libs.chucker.release)
+//    implementation(libs.hilt.android)
+//    ksp(libs.hilt.kapt)
+//    implementation(libs.hilt.navigation.compose)
+//    implementation(libs.navigation.compose)
+//    debugImplementation(libs.chucker.debug)
+//    releaseImplementation(libs.chucker.release)
+
+    implementation(libs.moe.android.sdk)
+    implementation(libs.android.sdk)
+    implementation(libs.android.sdk.directions.models)
+    implementation(libs.android.sdk.services)
+    implementation(libs.android.sdk.turf)
+    implementation(libs.android.plugin.markerview.v9)
+    implementation(libs.android.plugin.annotation.v9)
+
+    implementation(libs.lifecycle.extensions)
+    kapt(libs.lifecycle.compiler)
+    implementation(files("libs/maps-1.0.68.aar"))
 }
