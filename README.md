@@ -4,7 +4,12 @@ Trying out the OlaMaps Android SDK
 
 ## Getting Started 👣
 
-- Add your `CLIENT_ID` and `CLIENT_SECRET` in `local.properties`
+- Add your `CLIENT_ID` and `CLIENT_SECRET` in `local.properties`:
+  
+  ```
+  CLIENT_ID=abc123
+  CLIENT_SECRET=abc123
+  ```
 - And that's all you need!
 
 ## OnGoing Project 🗺️📐🛠️
