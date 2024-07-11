@@ -28,18 +28,16 @@ android {
         val localProperties = Properties()
         val localPropertiesFile = rootProject.file("local.properties")
 
-//        val baseUrl = if (localPropertiesFile.exists()) {
-//            localProperties.load(localPropertiesFile.inputStream())
-//
-//            localProperties.getProperty("BASE_URL", "https://dummyjson.com/")
-//        } else {
-//            "https://dummyjson.com/"
-//        }
-//
-//        /* TODO: Add base URL in local.properties file as:-
-//         *  BASE_URL=https://dummyjson.com/
-//        */
-//        buildConfigField("String", "BASE_URL", "\"${baseUrl}\"")
+        if (localPropertiesFile.exists()) {
+            localProperties.load(localPropertiesFile.inputStream())
+
+            val clientId = localProperties.getProperty("CLIENT_ID")
+            val clientSecret = localProperties.getProperty("CLIENT_SECRET")
+
+            buildConfigField("String", "CLIENT_ID", "\"${clientId}\"")
+            buildConfigField("String", "CLIENT_SECRET", "\"${clientSecret}\"")
+        }
+
     }
 
     buildTypes {
@@ -108,6 +106,8 @@ dependencies {
     implementation(libs.android.plugin.markerview.v9)
     implementation(libs.android.plugin.annotation.v9)
 
+    implementation(libs.androidx.lifecycle.viewmodel.ktx)
+    implementation(libs.androidx.fragment.ktx)
     implementation(libs.androidx.constraintlayout)
     implementation(libs.material)
     implementation(libs.androidx.appcompat)
