@@ -89,7 +89,7 @@ class MainActivity : AppCompatActivity(), MapStatusCallback {
 
                     chain.proceed(newRequest)
                 } // Instance of okhttp3.Interceptor for with Bearer access token, it is mandatory
-                .setMapTileStyle(MapTileStyle.DEFAULT_EARTH_FULL) //pass the MapTileStyle here, it is Optional.
+                .setMapTileStyle(MapTileStyle.DEFAULT_EARTH_LITE) //pass the MapTileStyle here, it is Optional.
                 .setMinZoomLevel(3.0)
                 .setMaxZoomLevel(21.0)
                 .setZoomLevel(14.0)
