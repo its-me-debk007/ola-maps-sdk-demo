@@ -12,6 +12,7 @@ Trying out the OlaMaps Android SDK
   CLIENT_SECRET=abc123
   ```
 - Go to `Build` -> `Clean Project`
+- Ensure your device has `Location` enabled
 - Uninstall any existing version of the app
 - Run the app
 
