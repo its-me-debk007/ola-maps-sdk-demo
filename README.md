@@ -4,13 +4,16 @@ Trying out the OlaMaps Android SDK
 
 ## Getting Started 👣
 
+- Clone the repo
 - Add your `CLIENT_ID` and `CLIENT_SECRET` in `local.properties`:
   
   ```
   CLIENT_ID=abc123
   CLIENT_SECRET=abc123
   ```
-- And that's all you need!
+- Go to `Build` -> `Clean Project`
+- Uninstall any existing version of the app
+- Run the app
 
 ## Ongoing Project 🚧
 
