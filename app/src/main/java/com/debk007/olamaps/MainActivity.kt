@@ -51,7 +51,10 @@ class MainActivity : AppCompatActivity(), MapStatusCallback {
                 viewModel.getAccessToken(
                     clientId = BuildConfig.CLIENT_ID,
                     clientSecret = BuildConfig.CLIENT_SECRET,
-                    onSuccess = { olaMapsInit() }
+                    onSuccess = { olaMapsInit() },
+                    onFailure = { errorMsg ->
+                        Toast.makeText(this, errorMsg, Toast.LENGTH_SHORT).show()
+                    }
                 )
             }
 

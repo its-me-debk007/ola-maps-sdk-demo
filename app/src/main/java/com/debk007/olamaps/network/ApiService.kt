@@ -1,6 +1,7 @@
 package com.debk007.olamaps.network
 
 import com.debk007.olamaps.model.AccessTokenDto
+import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.http.Field
@@ -25,5 +26,5 @@ interface ApiService {
         @Field("client_secret") clientSecret: String,
         @Field("grant_type") grantType: String = "client_credentials",
         @Field("scope") scope: String = "openid",
-    ): AccessTokenDto
+    ): Response<AccessTokenDto>
 }

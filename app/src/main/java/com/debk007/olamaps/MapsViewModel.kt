@@ -18,7 +18,7 @@ class MapsViewModel : ViewModel() {
     private var isApiCalled = false
 
     var accessToken = ""
-    fun getAccessToken(clientId: String, clientSecret: String, onSuccess: () -> Unit) {
+    fun getAccessToken(clientId: String, clientSecret: String, onSuccess: () -> Unit, onFailure: (String) -> Unit) {
         if (isApiCalled) return
 
         isApiCalled = true
@@ -36,6 +36,10 @@ class MapsViewModel : ViewModel() {
 
             } else if (result is ApiState.Error) {
                 Log.d("ola", "ERROR: ${result.errorMsg}")
+
+                withContext(Dispatchers.Main) {
+                    onFailure(result.errorMsg)
+                }
             }
         }
     }
