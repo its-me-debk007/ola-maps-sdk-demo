@@ -1,6 +1,8 @@
 package com.debk007.olamaps
 
+import android.annotation.SuppressLint
 import android.content.pm.PackageManager
+import android.location.Location
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
@@ -9,6 +11,8 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.debk007.olamaps.databinding.ActivityMainBinding
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
 import com.mapbox.api.directions.v5.models.DirectionsRoute
 import com.ola.maps.mapslibrary.models.OlaMapsConfig
 import com.ola.maps.mapslibrary.utils.MapTileStyle
@@ -19,6 +23,7 @@ class MainActivity : AppCompatActivity(), MapStatusCallback {
 
     private lateinit var binding: ActivityMainBinding
     private val viewModel: MapsViewModel by viewModels()
+    private lateinit var fusedLocationClient: FusedLocationProviderClient
     private val locationPermissionRequest = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
     ) { isGranted ->
@@ -36,24 +41,43 @@ class MainActivity : AppCompatActivity(), MapStatusCallback {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
+
         checkLocationPermission()
     }
 
+    @SuppressLint("MissingPermission")
     override fun onMapReady() {
         Log.d("ola", "map is ready")
 
-        viewModel.getDirectionsAndAddRoute(
-            originLatitudeLongitude = 26.7625839 to 80.9366054,
-            destinationLatitudeLongitude = 28.549507 to 77.20361,
-            onSuccess = {
-                val navigationRoute = binding.olaMapView.getNavigationMapRoute()
+        fusedLocationClient.lastLocation
+            .addOnSuccessListener { location: Location? ->
+                location?.let {
+                    val latitude = it.latitude
+                    val longitude = it.longitude
 
-                val directionsRouteList = arrayListOf<DirectionsRoute>()
-                directionsRouteList.add(transform(it))
+                    viewModel.getDirectionsAndAddRoute(
+                        originLatitudeLongitude = latitude to longitude,
+                        destinationLatitudeLongitude = 28.549507 to 77.20361,
+                        onSuccess = {
+                            val navigationRoute = binding.olaMapView.getNavigationMapRoute()
 
-                navigationRoute?.addRoutesForRoutePreview(directionsRouteList)
+                            val directionsRouteList = arrayListOf<DirectionsRoute>()
+                            directionsRouteList.add(transform(it))
+
+                            navigationRoute?.addRoutesForRoutePreview(directionsRouteList)
+                        }
+                    )
+
+                }
             }
-        )
+            .addOnFailureListener {
+                Toast.makeText(
+                    this,
+                    "unable to fetch current latitude, longitude",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
     }
 
     override fun onMapLoadFailed(p0: String?) {

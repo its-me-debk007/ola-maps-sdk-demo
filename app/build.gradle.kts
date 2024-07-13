@@ -100,6 +100,7 @@ dependencies {
 //    implementation(libs.navigation.compose)
 //    debugImplementation(libs.chucker.debug)
 //    releaseImplementation(libs.chucker.release)
+    implementation(libs.play.services.location)
 
     implementation(libs.moe.android.sdk)
     implementation(libs.android.sdk)
