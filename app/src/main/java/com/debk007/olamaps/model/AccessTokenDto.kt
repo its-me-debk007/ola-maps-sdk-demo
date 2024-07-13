@@ -1,23 +1,21 @@
 package com.debk007.olamaps.model
 
 
-import com.squareup.moshi.Json
-import com.squareup.moshi.JsonClass
+import com.google.gson.annotations.SerializedName
 
-@JsonClass(generateAdapter = true)
 data class AccessTokenDto(
-    @Json(name = "access_token")
+    @SerializedName("access_token")
     val accessToken: String,
-    @Json(name = "expires_in")
+    @SerializedName("expires_in")
     val expiresIn: Int,
-    @Json(name = "id_token")
+    @SerializedName("id_token")
     val idToken: String,
-    @Json(name = "not-before-policy")
+    @SerializedName("not-before-policy")
     val notBeforePolicy: Int,
-    @Json(name = "refresh_expires_in")
+    @SerializedName("refresh_expires_in")
     val refreshExpiresIn: Int,
-    @Json(name = "scope")
+    @SerializedName("scope")
     val scope: String,
-    @Json(name = "token_type")
+    @SerializedName("token_type")
     val tokenType: String
 )

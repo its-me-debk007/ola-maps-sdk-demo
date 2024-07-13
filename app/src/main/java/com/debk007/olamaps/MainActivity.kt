@@ -9,9 +9,11 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.debk007.olamaps.databinding.ActivityMainBinding
+import com.mapbox.api.directions.v5.models.DirectionsRoute
 import com.ola.maps.mapslibrary.models.OlaMapsConfig
 import com.ola.maps.mapslibrary.utils.MapTileStyle
 import com.ola.maps.navigation.ui.v5.MapStatusCallback
+import com.ola.maps.navigation.v5.navigation.direction.transform
 
 class MainActivity : AppCompatActivity(), MapStatusCallback {
 
@@ -35,11 +37,23 @@ class MainActivity : AppCompatActivity(), MapStatusCallback {
         setContentView(binding.root)
 
         checkLocationPermission()
-
     }
 
     override fun onMapReady() {
         Log.d("ola", "map is ready")
+
+        viewModel.getDirectionsAndAddRoute(
+            originLatitudeLongitude = 26.7625839 to 80.9366054,
+            destinationLatitudeLongitude = 28.549507 to 77.20361,
+            onSuccess = {
+                val navigationRoute = binding.olaMapView.getNavigationMapRoute()
+
+                val directionsRouteList = arrayListOf<DirectionsRoute>()
+                directionsRouteList.add(transform(it))
+
+                navigationRoute?.addRoutesForRoutePreview(directionsRouteList)
+            }
+        )
     }
 
     override fun onMapLoadFailed(p0: String?) {

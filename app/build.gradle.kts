@@ -33,9 +33,11 @@ android {
 
             val clientId = localProperties.getProperty("CLIENT_ID")
             val clientSecret = localProperties.getProperty("CLIENT_SECRET")
+            val apiKey = localProperties.getProperty("API_KEY")
 
             buildConfigField("String", "CLIENT_ID", "\"${clientId}\"")
             buildConfigField("String", "CLIENT_SECRET", "\"${clientSecret}\"")
+            buildConfigField("String", "API_KEY", "\"${apiKey}\"")
         }
 
     }
@@ -86,8 +88,9 @@ dependencies {
 //    debugImplementation(libs.ui.tooling)
 //    debugImplementation(libs.ui.test.manifest)
     implementation(libs.retrofit)
-    implementation(libs.moshi.converter)
-    ksp(libs.moshi.kotlin.codegen)
+//    implementation(libs.moshi.converter)
+//    ksp(libs.moshi.kotlin.codegen)
+    implementation(libs.gson.converter)
 //    implementation(libs.glide)
     implementation(libs.coroutines.android)
     implementation(libs.coroutines.core)
