@@ -67,7 +67,7 @@ interface AccessApiService {
 interface ApiService {
 
     @POST("routing/v1/directions")
-    suspend fun getDirections(
+    suspend fun getRouteInfo(
         @QueryMap queryMap: Map<String, String>
     ): Response<RouteInfoData>
 

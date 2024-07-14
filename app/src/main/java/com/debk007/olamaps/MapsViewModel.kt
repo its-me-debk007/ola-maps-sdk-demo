@@ -56,13 +56,13 @@ class MapsViewModel : ViewModel() {
         }
     }
 
-    fun getDirectionsAndAddRoute(
+    fun getRouteInfo(
         originLatitudeLongitude: LatLng,
         destinationLatitudeLongitude: LatLng,
         onSuccess: (RouteInfoData) -> Unit
     ) {
         viewModelScope.launch(Dispatchers.IO) {
-            val result = repository.getDirections(
+            val result = repository.getRouteInfo(
                 originLatLng = originLatitudeLongitude,
                 destinationLatLng = destinationLatitudeLongitude
             )
