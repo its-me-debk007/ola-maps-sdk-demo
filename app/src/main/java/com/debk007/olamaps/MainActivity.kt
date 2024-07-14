@@ -10,13 +10,15 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.core.view.isVisible
+import com.debk007.olamaps.adapter.SearchResultAdapter
 import com.debk007.olamaps.databinding.ActivityMainBinding
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.mapbox.api.directions.v5.models.DirectionsRoute
 import com.ola.maps.mapslibrary.models.OlaMapsConfig
-import com.ola.maps.mapslibrary.utils.MapTileStyle
 import com.ola.maps.navigation.ui.v5.MapStatusCallback
+import com.ola.maps.navigation.v5.navigation.NavigationMapRoute
 import com.ola.maps.navigation.v5.navigation.direction.transform
 
 class MainActivity : AppCompatActivity(), MapStatusCallback {
@@ -24,6 +26,9 @@ class MainActivity : AppCompatActivity(), MapStatusCallback {
     private lateinit var binding: ActivityMainBinding
     private val viewModel: MapsViewModel by viewModels()
     private lateinit var fusedLocationClient: FusedLocationProviderClient
+    private lateinit var currentLatLon: Pair<Double, Double>
+    private var navigationRoute: NavigationMapRoute? = null
+    private val directionsRouteList = arrayListOf<DirectionsRoute>()
     private val locationPermissionRequest = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
     ) { isGranted ->
@@ -44,40 +49,41 @@ class MainActivity : AppCompatActivity(), MapStatusCallback {
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
 
         checkLocationPermission()
+
+        val searchResultAdapter = SearchResultAdapter { latLon ->
+            binding.searchResultRecyclerView.isVisible = false
+
+            viewModel.getDirectionsAndAddRoute(
+                originLatitudeLongitude = currentLatLon,
+                destinationLatitudeLongitude = latLon,
+                onSuccess = {
+                    directionsRouteList.clear()
+                    directionsRouteList.add(transform(it))
+                    navigationRoute?.addRoutesForRoutePreview(directionsRouteList)
+
+                    binding.searchBar.text?.clear()
+                }
+            )
+        }
+        binding.searchResultRecyclerView.adapter = searchResultAdapter
+
+        binding.searchBar.setOnEditorActionListener { textView, i, keyEvent ->
+
+            viewModel.getAutoCompleteSearchResults(input = textView.text.toString(),
+                onSuccess = { predictionsList ->
+                    searchResultAdapter.updateData(predictionsList)
+                    binding.searchResultRecyclerView.isVisible = predictionsList.isNotEmpty()
+                })
+
+            true
+        }
     }
 
     @SuppressLint("MissingPermission")
     override fun onMapReady() {
         Log.d("ola", "map is ready")
 
-        fusedLocationClient.lastLocation
-            .addOnSuccessListener { location: Location? ->
-                location?.let {
-                    val latitude = it.latitude
-                    val longitude = it.longitude
-
-                    viewModel.getDirectionsAndAddRoute(
-                        originLatitudeLongitude = latitude to longitude,
-                        destinationLatitudeLongitude = 28.549507 to 77.20361,
-                        onSuccess = {
-                            val navigationRoute = binding.olaMapView.getNavigationMapRoute()
-
-                            val directionsRouteList = arrayListOf<DirectionsRoute>()
-                            directionsRouteList.add(transform(it))
-
-                            navigationRoute?.addRoutesForRoutePreview(directionsRouteList)
-                        }
-                    )
-
-                }
-            }
-            .addOnFailureListener {
-                Toast.makeText(
-                    this,
-                    "unable to fetch current latitude, longitude",
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
+        navigationRoute = binding.olaMapView.getNavigationMapRoute()
     }
 
     override fun onMapLoadFailed(p0: String?) {
@@ -106,6 +112,21 @@ class MainActivity : AppCompatActivity(), MapStatusCallback {
             ) == PackageManager.PERMISSION_GRANTED
         ) {
             olaMapsInit()
+
+            fusedLocationClient.lastLocation
+                .addOnSuccessListener { location: Location? ->
+                    location?.let {
+                        currentLatLon = it.latitude to it.longitude
+                    }
+                }
+                .addOnFailureListener {
+                    Toast.makeText(
+                        this,
+                        "unable to fetch current latitude, longitude",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+
         } else {
             locationPermissionRequest.launch(android.Manifest.permission.ACCESS_FINE_LOCATION)
         }
@@ -130,12 +151,16 @@ class MainActivity : AppCompatActivity(), MapStatusCallback {
 
                     chain.proceed(newRequest)
                 } // Instance of okhttp3.Interceptor for with Bearer access token, it is mandatory
-                .setMapTileStyle(MapTileStyle.DEFAULT_EARTH_LITE) //pass the MapTileStyle here, it is Optional.
                 .setMinZoomLevel(3.0)
                 .setMaxZoomLevel(21.0)
                 .setZoomLevel(14.0)
                 .build()
         )
+    }
+
+    override fun onStart() {
+        super.onStart()
+        binding.olaMapView.onStart()
     }
 
     override fun onStop() {

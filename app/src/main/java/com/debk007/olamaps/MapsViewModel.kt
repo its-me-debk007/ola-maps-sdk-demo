@@ -3,6 +3,7 @@ package com.debk007.olamaps
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.debk007.olamaps.model.autocomplete.Prediction
 import com.debk007.olamaps.network.AccessRetrofitClient
 import com.debk007.olamaps.network.RetrofitClient
 import com.debk007.olamaps.repository.RepositoryImpl
@@ -70,6 +71,22 @@ class MapsViewModel : ViewModel() {
 
                 withContext(Dispatchers.Main) {
                     onSuccess(result.data)
+                }
+
+            } else if (result is ApiState.Error) {
+                Log.d("ola", "ERROR: ${result.errorMsg}")
+            }
+        }
+    }
+
+    fun getAutoCompleteSearchResults(input: String, onSuccess: (List<Prediction>) -> Unit) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val result = repository.getAutoCompleteSearchResults(input)
+
+            if (result is ApiState.Success) {
+                Log.d("ola", "search status: ${result.data.predictions}")
+                withContext(Dispatchers.Main) {
+                    onSuccess(result.data.predictions)
                 }
 
             } else if (result is ApiState.Error) {

@@ -1,7 +1,7 @@
 package com.debk007.olamaps.repository
 
-import com.debk007.olamaps.BuildConfig
 import com.debk007.olamaps.model.AccessTokenDto
+import com.debk007.olamaps.model.autocomplete.AutoCompleteResp
 import com.debk007.olamaps.network.AccessApiService
 import com.debk007.olamaps.network.ApiService
 import com.debk007.olamaps.util.ApiState
@@ -44,10 +44,27 @@ class RepositoryImpl(
             "overview" to "full",
             "language" to "en",
             "traffic_metadata" to "false",
-            "api_key" to BuildConfig.API_KEY
         )
 
         val response = apiService.getDirections(queryMap)
+
+        if (response.isSuccessful) {
+            ApiState.Success(response.body()!!)
+        } else {
+            response.errorBody()!!.charStream().use { reader ->
+                val jsonObj = JSONObject(reader.readText())
+                throw Exception(jsonObj.toString())
+            }
+
+        }
+    } catch (e: Exception) {
+        ApiState.Error(errorMsg = e.message.toString())
+    }
+
+    override suspend fun getAutoCompleteSearchResults(
+        input: String
+    ): ApiState<AutoCompleteResp> = try {
+        val response = apiService.getAutoCompleteSearchResults(input)
 
         if (response.isSuccessful) {
             ApiState.Success(response.body()!!)
