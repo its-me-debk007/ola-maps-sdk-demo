@@ -11,7 +11,7 @@ interface Repository {
 
     suspend fun getAutoCompleteSearchResults(input: String): ApiState<AutoCompleteResp>
 
-    suspend fun getDirections(
+    suspend fun getRouteInfo(
         originLatLng: LatLng,
         destinationLatLng: LatLng
     ): ApiState<RouteInfoData>

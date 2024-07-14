@@ -63,39 +63,11 @@ class MainActivity : AppCompatActivity(), MapStatusCallback {
 
         val searchResultAdapter = SearchResultAdapter { latLng ->
             binding.searchResultRecyclerView.isVisible = false
-            binding.directionsBtn.isVisible = true
-
-            binding.olaMapView.apply {
-                updateMarkerView(
-                    OlaMarkerOptions.Builder()
-                        .setMarkerId(markerViewOptions.markerId)
-                        .setPosition(
-                            OlaLatLng(
-                                latitude = latLng.latitude,
-                                longitude = latLng.longitude
-                            )
-                        )
-                        .setIconIntRes(markerViewOptions.iconIntRes!!)
-                        .setIconSize(markerViewOptions.iconSize)
-                        .build()
-                )
-                navigationRoute?.removeRoute()
-                navigationRoute?.animateCamera(latLng, 1.0)
-            }
-
-            viewModel.getDirectionsAndAddRoute(
-                originLatitudeLongitude = currentLatLng,
-                destinationLatitudeLongitude = latLng,
-                onSuccess = { routeInfoData ->
-                    binding.directionsBtn.setOnClickListener {
-                        setupRoute(routeInfoData, latLng)
-                        binding.directionsBtn.isVisible = false
-                    }
-                }
-            )
+            setupRoute(latLng)
 
             binding.searchBar.text?.clear()
         }
+
         binding.searchResultRecyclerView.adapter = searchResultAdapter
 
         binding.searchBar.setOnEditorActionListener { textView, i, keyEvent ->
@@ -115,8 +87,8 @@ class MainActivity : AppCompatActivity(), MapStatusCallback {
     override fun onMapReady() {
         navigationRoute = binding.olaMapView.getNavigationMapRoute()
 
-        binding.olaMapView.addOnMapClickListener {
-
+        binding.olaMapView.addOnMapClickListener { latLng ->
+            setupRoute(latLng)
             true
         }
 
@@ -208,7 +180,39 @@ class MainActivity : AppCompatActivity(), MapStatusCallback {
         )
     }
 
-    private fun setupRoute(routeInfoData: RouteInfoData, latLng: LatLng) {
+    private fun setupRoute(latLng: LatLng) {
+        binding.directionsBtn.isVisible = true
+
+        binding.olaMapView.updateMarkerView(
+            OlaMarkerOptions.Builder()
+                .setMarkerId(markerViewOptions.markerId)
+                .setPosition(
+                    OlaLatLng(
+                        latitude = latLng.latitude,
+                        longitude = latLng.longitude
+                    )
+                )
+                .setIconIntRes(markerViewOptions.iconIntRes!!)
+                .setIconSize(markerViewOptions.iconSize)
+                .build()
+        )
+
+        navigationRoute?.removeRoute()
+        navigationRoute?.animateCamera(latLng, 1.0)
+
+        viewModel.getRouteInfo(
+            originLatitudeLongitude = currentLatLng,
+            destinationLatitudeLongitude = latLng,
+            onSuccess = { routeInfoData ->
+                binding.directionsBtn.setOnClickListener {
+                    showRoute(routeInfoData, latLng)
+                    binding.directionsBtn.isVisible = false
+                }
+            }
+        )
+    }
+
+    private fun showRoute(routeInfoData: RouteInfoData, latLng: LatLng) {
         navigationRoute?.removeRoute()
         directionsRouteList.clear()
         directionsRouteList.add(transform(routeInfoData))

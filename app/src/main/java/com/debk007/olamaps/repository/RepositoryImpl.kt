@@ -33,7 +33,7 @@ class RepositoryImpl(
         ApiState.Error(errorMsg = e.message.toString())
     }
 
-    override suspend fun getDirections(
+    override suspend fun getRouteInfo(
         originLatLng: LatLng,
         destinationLatLng: LatLng,
     ): ApiState<RouteInfoData> = try {
@@ -47,7 +47,7 @@ class RepositoryImpl(
             "traffic_metadata" to "false",
         )
 
-        val response = apiService.getDirections(queryMap)
+        val response = apiService.getRouteInfo(queryMap)
 
         if (response.isSuccessful) {
             ApiState.Success(response.body()!!)
