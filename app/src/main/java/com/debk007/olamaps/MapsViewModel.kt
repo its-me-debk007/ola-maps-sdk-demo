@@ -3,10 +3,12 @@ package com.debk007.olamaps
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.debk007.olamaps.model.autocomplete.Prediction
 import com.debk007.olamaps.network.AccessRetrofitClient
 import com.debk007.olamaps.network.RetrofitClient
 import com.debk007.olamaps.repository.RepositoryImpl
 import com.debk007.olamaps.util.ApiState
+import com.mapbox.mapboxsdk.geometry.LatLng
 import com.ola.maps.navigation.v5.model.route.RouteInfoData
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -55,21 +57,34 @@ class MapsViewModel : ViewModel() {
     }
 
     fun getDirectionsAndAddRoute(
-        originLatitudeLongitude: Pair<Double, Double>,
-        destinationLatitudeLongitude: Pair<Double, Double>,
+        originLatitudeLongitude: LatLng,
+        destinationLatitudeLongitude: LatLng,
         onSuccess: (RouteInfoData) -> Unit
     ) {
         viewModelScope.launch(Dispatchers.IO) {
             val result = repository.getDirections(
-                originLatitudeLongitude = originLatitudeLongitude,
-                destinationLatitudeLongitude = destinationLatitudeLongitude
+                originLatLng = originLatitudeLongitude,
+                destinationLatLng = destinationLatitudeLongitude
             )
 
             if (result is ApiState.Success) {
-                Log.d("ola", "route api: ${result.data.sourceFrom}")
-
                 withContext(Dispatchers.Main) {
                     onSuccess(result.data)
+                }
+
+            } else if (result is ApiState.Error) {
+                Log.d("ola", "ERROR: ${result.errorMsg}")
+            }
+        }
+    }
+
+    fun getAutoCompleteSearchResults(input: String, onSuccess: (List<Prediction>) -> Unit) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val result = repository.getAutoCompleteSearchResults(input)
+
+            if (result is ApiState.Success) {
+                withContext(Dispatchers.Main) {
+                    onSuccess(result.data.predictions)
                 }
 
             } else if (result is ApiState.Error) {

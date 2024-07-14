@@ -17,20 +17,22 @@ Trying out the OlaMaps Android SDK
 - Uninstall any existing version of the app
 - Run the app
 
-## Ongoing Project 🚧
+## Features ✨
+- `access token` valid for 60 minutes. Implemented logic to auto-refresh token when expired or absent
+- Implemented some features that are not even included in official documentation
+- Jump to current location with a button click
+- An Info card (called HuddleMarkerView) for current location
+- Choose location by search or tap on the map
+- Get directions from current location to chosen destination
 
-- This is an ongoing project, and I am exploring more features available in the official OlaMaps SDK
-- For now, the app shows the map around your current location
-- The `access token` is valid for 60 minutes. Logic has been implemented to automatically fetch a new token when it is absent or expired
+> [!NOTE]
+> This is an ongoing project, and I'm exploring more features available in the OlaMaps SDK
 
-### Route
-This app has a route enabled, that starts form your current location to Hauz Khas, Delhi, India
+## Demo
+https://github.com/user-attachments/assets/7ac1a6cc-463d-4f41-a073-1ba4d464d0d4
 
-## Screenshot
-<img src="https://github.com/user-attachments/assets/08211fb0-9838-49a6-a5bc-cea02f77ef9f" width="300">
-
-> [!NOTE]  
-> Ensure that the device does not have proxy certificate installed, or you'll get an `Unacceptable certificate` error.
+> [!NOTE]
+> Map not rendering on Emulator? Try real device
 
 ## License
 
