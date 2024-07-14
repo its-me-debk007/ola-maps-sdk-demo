@@ -8,6 +8,7 @@ import com.debk007.olamaps.network.AccessRetrofitClient
 import com.debk007.olamaps.network.RetrofitClient
 import com.debk007.olamaps.repository.RepositoryImpl
 import com.debk007.olamaps.util.ApiState
+import com.mapbox.mapboxsdk.geometry.LatLng
 import com.ola.maps.navigation.v5.model.route.RouteInfoData
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -56,19 +57,17 @@ class MapsViewModel : ViewModel() {
     }
 
     fun getDirectionsAndAddRoute(
-        originLatitudeLongitude: Pair<Double, Double>,
-        destinationLatitudeLongitude: Pair<Double, Double>,
+        originLatitudeLongitude: LatLng,
+        destinationLatitudeLongitude: LatLng,
         onSuccess: (RouteInfoData) -> Unit
     ) {
         viewModelScope.launch(Dispatchers.IO) {
             val result = repository.getDirections(
-                originLatitudeLongitude = originLatitudeLongitude,
-                destinationLatitudeLongitude = destinationLatitudeLongitude
+                originLatLng = originLatitudeLongitude,
+                destinationLatLng = destinationLatitudeLongitude
             )
 
             if (result is ApiState.Success) {
-                Log.d("ola", "route api: ${result.data.sourceFrom}")
-
                 withContext(Dispatchers.Main) {
                     onSuccess(result.data)
                 }
@@ -84,7 +83,6 @@ class MapsViewModel : ViewModel() {
             val result = repository.getAutoCompleteSearchResults(input)
 
             if (result is ApiState.Success) {
-                Log.d("ola", "search status: ${result.data.predictions}")
                 withContext(Dispatchers.Main) {
                     onSuccess(result.data.predictions)
                 }

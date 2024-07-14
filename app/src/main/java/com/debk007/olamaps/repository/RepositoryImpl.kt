@@ -5,6 +5,7 @@ import com.debk007.olamaps.model.autocomplete.AutoCompleteResp
 import com.debk007.olamaps.network.AccessApiService
 import com.debk007.olamaps.network.ApiService
 import com.debk007.olamaps.util.ApiState
+import com.mapbox.mapboxsdk.geometry.LatLng
 import com.ola.maps.navigation.v5.model.route.RouteInfoData
 import org.json.JSONObject
 
@@ -33,12 +34,12 @@ class RepositoryImpl(
     }
 
     override suspend fun getDirections(
-        originLatitudeLongitude: Pair<Double, Double>,
-        destinationLatitudeLongitude: Pair<Double, Double>,
+        originLatLng: LatLng,
+        destinationLatLng: LatLng,
     ): ApiState<RouteInfoData> = try {
         val queryMap = mapOf(
-            "origin" to "${originLatitudeLongitude.first},${originLatitudeLongitude.second}",
-            "destination" to "${destinationLatitudeLongitude.first},${destinationLatitudeLongitude.second}",
+            "origin" to "${originLatLng.latitude},${originLatLng.longitude}",
+            "destination" to "${destinationLatLng.latitude},${destinationLatLng.longitude}",
             "alternatives" to "false",
             "steps" to "true",
             "overview" to "full",

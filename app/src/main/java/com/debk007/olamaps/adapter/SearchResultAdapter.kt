@@ -5,9 +5,10 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.debk007.olamaps.databinding.ItemSearchResultBinding
 import com.debk007.olamaps.model.autocomplete.Prediction
+import com.mapbox.mapboxsdk.geometry.LatLng
 
 class SearchResultAdapter(
-    private val onSearchResultClick: (Pair<Double, Double>) -> Unit
+    private val onSearchResultClick: (LatLng) -> Unit
 ) : RecyclerView.Adapter<SearchResultAdapter.SearchResultViewHolder>() {
 
     private val items: MutableList<Prediction> = mutableListOf()
@@ -18,7 +19,12 @@ class SearchResultAdapter(
             binding.searchResultText.text = items[adapterPosition].description
 
             binding.searchResultText.setOnClickListener {
-                onSearchResultClick(items[adapterPosition].geometry.location.lat to items[adapterPosition].geometry.location.lng)
+                onSearchResultClick(
+                    LatLng(
+                        items[adapterPosition].geometry.location.lat,
+                        items[adapterPosition].geometry.location.lng
+                    )
+                )
                 updateData(emptyList())
             }
         }

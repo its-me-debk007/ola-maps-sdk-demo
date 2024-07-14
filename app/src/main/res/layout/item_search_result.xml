@@ -14,7 +14,7 @@
         android:layout_marginBottom="16dp"
         android:ellipsize="end"
         android:maxLines="2"
-        android:textColor="@color/white"
+        android:textColor="@color/black"
         android:textSize="16sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
