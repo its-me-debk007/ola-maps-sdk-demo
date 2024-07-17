@@ -83,7 +83,6 @@ class MainActivity : AppCompatActivity(), MapStatusCallback {
 
     }
 
-    @SuppressLint("MissingPermission")
     override fun onMapReady() {
         navigationRoute = binding.olaMapView.getNavigationMapRoute()
 
@@ -125,35 +124,12 @@ class MainActivity : AppCompatActivity(), MapStatusCallback {
         ) {
             olaMapsInit()
 
-            fusedLocationClient.lastLocation
-                .addOnSuccessListener { location: Location? ->
-                    location?.let {
-                        currentLatLng = LatLng(it.latitude, it.longitude)
-
-                        binding.olaMapView.addHuddleMarkerView(
-                            olaLatLng = OlaLatLng(
-                                latitude = currentLatLng.latitude,
-                                longitude = currentLatLng.longitude
-                            ),
-                            headerText = "Current Location",
-                            descriptionText = "This is your location"
-                        )
-
-                    }
-                }
-                .addOnFailureListener {
-                    Toast.makeText(
-                        this,
-                        "unable to fetch current latitude, longitude",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
-
         } else {
             locationPermissionRequest.launch(android.Manifest.permission.ACCESS_FINE_LOCATION)
         }
     }
 
+    @SuppressLint("MissingPermission")
     private fun olaMapsInit() {
         binding.olaMapView.initialize(
             mapStatusCallback = this,
@@ -178,6 +154,30 @@ class MainActivity : AppCompatActivity(), MapStatusCallback {
                 .setZoomLevel(14.0)
                 .build()
         )
+
+        fusedLocationClient.lastLocation
+            .addOnSuccessListener { location: Location? ->
+                location?.let {
+                    currentLatLng = LatLng(it.latitude, it.longitude)
+
+                    binding.olaMapView.addHuddleMarkerView(
+                        olaLatLng = OlaLatLng(
+                            latitude = currentLatLng.latitude,
+                            longitude = currentLatLng.longitude
+                        ),
+                        headerText = "Current Location",
+                        descriptionText = "This is your location"
+                    )
+
+                }
+            }
+            .addOnFailureListener {
+                Toast.makeText(
+                    this,
+                    "unable to fetch current latitude, longitude",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
     }
 
     private fun setupRoute(latLng: LatLng) {
