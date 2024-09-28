@@ -1,6 +1,8 @@
 # OlaMaps SDK Demo
 
 Trying out the OlaMaps Android SDK
+> [!NOTE]
+> Ola Maps **v1.0.68** is being used in this project. The code implementation may change if a newer version is released
 
 ## Getting Started 👣
 
